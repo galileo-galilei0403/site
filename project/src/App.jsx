@@ -59,18 +59,7 @@ ${sections.result2 || ''}
 \\section{Discussion}
 ${sections.discussion1 || ''}
 ${sections.discussion2 || ''}` : 
-structureType === 'mergeDiscussion' ? `
-\\section{Methods}
-${sections.method1 || ''}
-${sections.method2 || ''}
-
-\\section{Results}
-${sections.result1 || ''}
-${sections.result2 || ''}
-${sections.result3 || ''}
-
-\\section{Discussion}
-${sections.discussion2 || ''}` : `
+`
 \\section{First Experiment}
 \\subsection{Method}
 ${sections.method1 || ''}
@@ -143,7 +132,6 @@ export default function App() {
     method2: "",
     result2: "",
     discussion2: "",
-    result3: "",
     conclusion: "",
   });
 
@@ -154,11 +142,23 @@ export default function App() {
   const sectionLayout = () => {
     switch (structureType) {
       case "paired":
-        return ["method1", "result1", "discussion1", "method2", "result2", "discussion2"];
+        return [
+          { key: "method1", label: "Method 1" },
+          { key: "result1", label: "Result 1" },
+          { key: "discussion1", label: "Discussion 1" },
+          { key: "method2", label: "Method 2" },
+          { key: "result2", label: "Result 2" },
+          { key: "discussion2", label: "Discussion 2" }
+        ];
       case "grouped":
-        return ["method1", "method2", "result1", "result2", "discussion1", "discussion2"];
-      case "mergeDiscussion":
-        return ["method1", "method2", "result1", "result2", "result3", "discussion2"];
+        return [
+          { key: "method1", label: "Method 1" },
+          { key: "method2", label: "Method 2" },
+          { key: "result1", label: "Result 1" },
+          { key: "result2", label: "Result 2" },
+          { key: "discussion1", label: "Discussion 1" },
+          { key: "discussion2", label: "Discussion 2" }
+        ];
       default:
         return [];
     }
@@ -183,7 +183,6 @@ export default function App() {
         >
           <option value="paired">Method → Result → Discussion</option>
           <option value="grouped">Methods → Results → Discussions</option>
-          <option value="mergeDiscussion">Results → Discussion (Grouped)</option>
         </select>
       </div>
 
@@ -215,10 +214,10 @@ export default function App() {
         placeholder={sectionExamples.relatedWork}
       />
 
-      {sectionLayout().map((key) => (
+      {sectionLayout().map(({ key, label }) => (
         <SectionInput
           key={key}
-          label={key.replace(/(\d)/, " $1").replace(/([a-z])([A-Z])/, "$1 $2").toUpperCase()}
+          label={label}
           value={sections[key] || ""}
           onChange={(v) => updateSection(key, v)}
           placeholder={sectionExamples[key.replace(/\d/, "")] || ""}
